@@ -60,6 +60,17 @@ jobs:
             --concurrency 80 \
             --timeout 60 \
             --liveness-probe httpGet.path=/health,httpGet.port=8080,periodSeconds=30,timeoutSeconds=5,failureThreshold=3 \
+            --remove-env-vars PREVIEW_PR \
+            --quiet
+
+      # PR previews deploy with --no-traffic, which pins traffic to a fixed revision.
+      # Production must explicitly send 100% to the revision it just deployed.
+      - name: Send all traffic to the new revision
+        run: |
+          gcloud run services update-traffic "$SERVICE" \
+            --project "$PROJECT_ID" \
+            --region "$REGION" \
+            --to-latest \
             --quiet
 
       - name: Smoke test

@@ -3,7 +3,7 @@ import Terminal from "./terminal/Terminal";
 import Pipeline from "./pipeline/Pipeline";
 
 export default function App() {
-  const { version, revision, started } = useRuntimeInfo();
+  const { version, revision, started, preview } = useRuntimeInfo();
 
   return (
     <div className="wrap">
@@ -11,10 +11,17 @@ export default function App() {
         <div className="logo">
           ship<span>.</span>it
         </div>
-        <div className="pill mono">
-          <span className="dot" />
-          live · v{version}
-        </div>
+        {preview ? (
+          <div className="pill pill-preview mono" title="This is a preview of a pull request, not production">
+            <span className="dot" />
+            preview · PR #{preview}
+          </div>
+        ) : (
+          <div className="pill mono">
+            <span className="dot" />
+            live · v{version}
+          </div>
+        )}
       </nav>
 
       <header className="hero">

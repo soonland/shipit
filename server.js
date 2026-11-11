@@ -13,6 +13,8 @@ const info = {
   version,
   revision: process.env.K_REVISION || "local",
   started: new Date(bootedAt).toISOString().replace("T", " ").slice(0, 19) + " UTC",
+  // Set only on PR preview revisions (see .github/workflows/preview.yml).
+  preview: Number(process.env.PREVIEW_PR) || null,
 };
 
 const chaos = createChaos();

@@ -8,7 +8,7 @@ describe("useRuntimeInfo", () => {
   it("returns the fallback before the API answers", () => {
     vi.spyOn(globalThis, "fetch").mockReturnValue(new Promise(() => {}));
     const { result } = renderHook(() => useRuntimeInfo());
-    expect(result.current).toEqual({ version: "dev", revision: "local", started: "—" });
+    expect(result.current).toEqual({ version: "dev", revision: "local", started: "—", preview: null });
   });
 
   it("uses the data from /api/info", async () => {

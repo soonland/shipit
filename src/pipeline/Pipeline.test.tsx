@@ -13,6 +13,9 @@ describe("Pipeline", () => {
     expect(tabs[0]).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("tabpanel")).toHaveTextContent(stages[0].summary);
 
+    fireEvent.click(screen.getByRole("tab", { name: /Preview/ }));
+    expect(screen.getByRole("tabpanel")).toHaveTextContent("--no-traffic --tag pr-16");
+
     fireEvent.click(screen.getByRole("tab", { name: /CI/ }));
     expect(screen.getByRole("tab", { name: /CI/ })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("tabpanel")).toHaveTextContent("pnpm lint && pnpm typecheck");
@@ -34,9 +37,9 @@ describe("Pipeline", () => {
       act(() => vi.advanceTimersByTime(140)); // Commit (120ms) done, CI running
       expect(screen.getByRole("tab", { name: /CI/ })).toHaveAttribute("aria-selected", "true");
       expect(screen.getByRole("tab", { name: /Commit/ })).toHaveClass("stage-done");
-      // The line has already travelled to CI (node 2 of 6) when CI starts.
+      // The line has already travelled to CI (node 2) when CI starts.
       const track = document.querySelector<HTMLElement>(".pipe-track")!;
-      expect(track.style.getPropertyValue("--progress")).toBe("20%");
+      expect(track.style.getPropertyValue("--progress")).toBe(`${(1 / (stages.length - 1)) * 100}%`);
       expect(screen.getByRole("tab", { name: /CI/ })).toHaveClass("stage-running");
 
       act(() => vi.advanceTimersByTime(stages.reduce((t, s) => t + s.simMs, 0) * 0.1));

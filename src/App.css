@@ -71,9 +71,9 @@ h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.03em;margin-bottom:28px}
 .pipe-run:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 .pipe-run:disabled{opacity:.6;cursor:progress}
 .pipe-track{position:relative;--progress:0%}
-.pipe-rail{position:absolute;left:calc(100%/12);right:calc(100%/12);top:23px;height:2px;background:var(--line);overflow:hidden}
+.pipe-rail{position:absolute;left:calc(100% / (2 * var(--n,6)));right:calc(100% / (2 * var(--n,6)));top:23px;height:2px;background:var(--line);overflow:hidden}
 .pipe-rail::after{content:"";position:absolute;inset:0;width:var(--progress);background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width var(--rail-ms,450ms) ease-in-out;box-shadow:0 0 12px var(--accent)}
-.pipe-stages{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.pipe-stages{position:relative;display:grid;grid-template-columns:repeat(var(--n,6),1fr);gap:6px}
 .stage{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:var(--text);cursor:pointer;padding:0 4px 10px;font:inherit;border-radius:12px}
 .stage:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .stage-node{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:13px;color:var(--muted);background:var(--panel);border:1px solid var(--line);transition:.3s}
@@ -104,13 +104,16 @@ h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.03em;margin-bottom:28px}
 .pipe-code .p{color:var(--accent)}
 .pipe-result{margin-top:14px;color:var(--accent);font-size:13.5px;animation:logIn .3s ease-out}
 @media(max-width:760px){
-  .pipe-stages{grid-template-columns:repeat(3,1fr);row-gap:18px}
+  .pipe-stages{grid-template-columns:repeat(4,1fr);row-gap:18px}
   .pipe-rail{display:none}
 }
 @media(prefers-reduced-motion:reduce){.stage-running .stage-node::before,.stage-running .stage-node::after,.pipe-panel,.pipe-result{animation:none}.pipe-rail::after{transition:none}}
 
 footer{border-top:1px solid var(--line);padding:30px 0 50px;color:var(--muted);font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 @media(max-width:760px){.stats{grid-template-columns:1fr}.hero{padding:40px 0}}
+
+.pill-preview{color:var(--warn);border-color:rgba(255,225,77,.5);box-shadow:0 0 14px -4px rgba(255,225,77,.6)}
+.pill-preview .dot{background:var(--warn);box-shadow:0 0 8px var(--warn)}
 
 /* terminal prompt + chaos */
 .term-prompt{align-items:center;gap:8px;margin-top:4px}
