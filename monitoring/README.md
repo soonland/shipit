@@ -19,3 +19,16 @@ ETAG=$(gcloud monitoring dashboards describe "$ID" --format='value(etag)')
 jq --arg etag "$ETAG" '. + {etag: $etag}' monitoring/dashboard.json > /tmp/dashboard.json
 gcloud monitoring dashboards update "$ID" --config-from-file=/tmp/dashboard.json
 ```
+
+## Alerts
+
+Sent to the "Alerts email" notification channel (`notificationChannels/11756930934441046895`).
+Policies live in `alerts/`; incidents auto-close 30 min after recovery.
+
+| Policy | Fires when | Severity |
+|---|---|---|
+| `shipit: site down` (`uptime-down.json`) | `/health` fails from 2+ regions | critical |
+| `shipit: 5xx errors` (`5xx-errors.json`) | any 5xx response in 5 min | error |
+| `shipit: slow responses` (`slow-p95.json`) | p95 latency > 1 s for 10 min | warning |
+
+Create a policy from a file: `gcloud monitoring policies create --policy-from-file=monitoring/alerts/<file>.json`

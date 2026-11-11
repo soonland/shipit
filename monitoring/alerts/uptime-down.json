@@ -1,0 +1,39 @@
+{
+  "displayName": "shipit: site down",
+  "combiner": "OR",
+  "severity": "CRITICAL",
+  "conditions": [
+    {
+      "displayName": "Uptime check failing in 2+ regions",
+      "conditionThreshold": {
+        "filter": "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" AND resource.type=\"uptime_url\" AND metric.label.check_id=\"shipit-health-mPyRhihDCZ4\"",
+        "aggregations": [
+          {
+            "alignmentPeriod": "1200s",
+            "perSeriesAligner": "ALIGN_NEXT_OLDER",
+            "crossSeriesReducer": "REDUCE_COUNT_FALSE",
+            "groupByFields": [
+              "resource.label.*"
+            ]
+          }
+        ],
+        "comparison": "COMPARISON_GT",
+        "thresholdValue": 1,
+        "duration": "60s",
+        "trigger": {
+          "count": 1
+        }
+      }
+    }
+  ],
+  "notificationChannels": [
+    "projects/devops-playground-14386/notificationChannels/11756930934441046895"
+  ],
+  "alertStrategy": {
+    "autoClose": "1800s"
+  },
+  "documentation": {
+    "mimeType": "text/markdown",
+    "content": "**/health is failing from at least 2 regions.**\n\nCheck the latest deploy in GitHub Actions and the Cloud Run revisions; roll back with `gcloud run services update-traffic shipit --to-revisions=<previous>=100`.\n\n[Dashboard](https://console.cloud.google.com/monitoring/dashboards/builder/cf717913-54db-4263-a4f3-fcc4085fc2c7?project=devops-playground-14386) \u00b7 [Live site](https://shipit-116485471187.northamerica-northeast1.run.app)"
+  }
+}
