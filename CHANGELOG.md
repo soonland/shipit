@@ -4,6 +4,17 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project uses [Semantic Versioning](https://semver.org/).
 
+## [2.4.0] - 2026-11-11
+
+### Added
+- Preview deployment for every pull request: a no-traffic Cloud Run revision tagged `pr-<number>`, smoke-tested, linked in a PR comment and removed when the PR closes; the page shows a "preview · PR #n" badge (#16)
+- Pipeline section updated to the current flow, with a new Preview stage (seven stages) (#16)
+- Monitoring managed with Terraform: dashboard, uptime check, email channel and alert policies, with state in a private versioned bucket (#14)
+- Terraform workflow: plan on pull requests posted as a comment (read-only identity), apply via "Run workflow" on main only (#15)
+
+### Improvements
+- Production deploys send 100% of traffic to the new revision explicitly, so previews never affect production (#16)
+
 ## [2.3.1] - 2026-11-10
 
 ### Improvements
@@ -49,6 +60,7 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 First tagged release: React + TypeScript one-pager on Cloud Run, with CI, a manual deploy workflow, Dependabot, Vitest, ESLint and commitlint (#1, #3, #4).
 
+[2.4.0]: https://github.com/soonland/shipit/compare/v2.3.1...v2.4.0
 [2.3.1]: https://github.com/soonland/shipit/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/soonland/shipit/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/soonland/shipit/compare/v2.1.0...v2.2.0
