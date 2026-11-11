@@ -46,12 +46,20 @@ jobs:
 
       - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
 
+      # Runtime settings live here, so every release applies the same configuration.
       - name: Deploy
         run: |
           gcloud run deploy "$SERVICE" \
             --project "$PROJECT_ID" \
             --region "$REGION" \
             --source . \
+            --service-account "shipit-runtime@$PROJECT_ID.iam.gserviceaccount.com" \
+            --max-instances 3 \
+            --memory 256Mi \
+            --cpu 1 \
+            --concurrency 80 \
+            --timeout 60 \
+            --liveness-probe httpGet.path=/health,httpGet.port=8080,periodSeconds=30,timeoutSeconds=5,failureThreshold=3 \
             --quiet
 
       - name: Smoke test
