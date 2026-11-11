@@ -112,6 +112,31 @@ h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.03em;margin-bottom:28px}
 footer{border-top:1px solid var(--line);padding:30px 0 50px;color:var(--muted);font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 @media(max-width:760px){.stats{grid-template-columns:1fr}.hero{padding:40px 0}}
 
+/* terminal prompt + chaos */
+.term-prompt{align-items:center;gap:8px;margin-top:4px}
+.term-input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--text);font-size:inherit;caret-color:var(--accent);padding:0}
+.term-input::placeholder{color:#3b3f55}
+.term-status{display:flex;align-items:center;gap:14px;height:30px;padding:0 10px;border-top:1px solid #0a0b0f;background:linear-gradient(#1c1e27,#17181f);font-size:11.5px;color:var(--muted)}
+.term-state{display:flex;align-items:center;gap:6px}
+.term-state-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pulse 2s infinite}
+.term-state.is-stopped .term-state-dot{background:#4b5468;box-shadow:none;animation:none}
+.term-status-right{margin-left:auto}
+.log-error .log-tag,.log-error .log-text{color:#ff4d6d;text-shadow:0 0 8px rgba(255,77,109,.5)}
+.lock-btn{display:flex;align-items:center;gap:6px;height:22px;min-width:22px;justify-content:center;padding:0 7px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;transition:.2s;font-size:12px}
+.lock-btn:hover,.lock-btn:focus-visible{color:var(--text);border-color:var(--accent);outline:none}
+.lock-btn.is-unlocked{color:#ff4d6d;border-color:#ff4d6d;box-shadow:0 0 14px -2px rgba(255,77,109,.6);text-shadow:0 0 6px rgba(255,77,109,.6)}
+.lock-backdrop{position:fixed;inset:0;background:rgba(3,3,8,.7);backdrop-filter:blur(4px);display:grid;place-items:center;z-index:10;padding:16px;animation:logIn .2s ease-out}
+.lock-dialog{width:min(380px,100%);background:var(--panel);border:1px solid rgba(192,64,255,.4);border-radius:14px;padding:22px;box-shadow:0 0 40px -10px rgba(192,64,255,.6),0 30px 80px -20px rgba(0,0,0,.8)}
+.lock-dialog h3{display:flex;align-items:center;gap:8px;font-size:18px;margin-bottom:6px}
+.lock-dialog p{color:var(--muted);font-size:14px;margin-bottom:14px}
+.lock-dialog input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--text);font-size:15px;outline:none;letter-spacing:.15em}
+.lock-dialog input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,200,255,.15)}
+.lock-error{color:#ff4d6d!important;margin:10px 0 0!important}
+.lock-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+.lock-cancel{background:none;border:0;color:var(--muted);cursor:pointer;font:inherit}
+.lock-submit{background:linear-gradient(90deg,var(--accent),var(--accent2));border:0;border-radius:999px;padding:8px 16px;color:var(--bg);font-weight:600;cursor:pointer}
+.lock-submit:disabled{opacity:.5;cursor:not-allowed}
+
 /* ── neon variant ─────────────────────────────────────────── */
 :root{--bg:#06060c;--panel:#0d0d18;--line:#1e1d33;--accent:#00c8ff;--accent2:#c040ff;--warn:#ffe14d;--neon-a:0 0 6px rgba(0,200,255,.9),0 0 18px rgba(0,200,255,.55),0 0 40px rgba(0,200,255,.25);--neon-b:0 0 6px rgba(192,64,255,.9),0 0 18px rgba(192,64,255,.55),0 0 40px rgba(192,64,255,.25)}
 body::before{background:

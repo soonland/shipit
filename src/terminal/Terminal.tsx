@@ -1,4 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { setKey, useChaosKey } from "../chaos/client";
+import { runCommand } from "./commands";
+import LockButton from "../chaos/LockButton";
 import {
   bootLines,
   heartbeatLine,
@@ -58,6 +61,7 @@ const tags: Record<LogLine["level"], string> = {
   debug: "DEBUG",
   ok: "OK",
   warn: "WARN",
+  error: "ERROR",
 };
 
 export default function Terminal({
@@ -70,6 +74,12 @@ export default function Terminal({
   const [session, setSession] = useState(0); // 0 = first visit (boot), then one per resume
   const [stopped, setStopped] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const key = useChaosKey();
+  const [input, setInput] = useState("");
+  const [busy, setBusy] = useState(false);
+  const history = useRef<string[]>([]);
+  const historyPos = useRef(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -140,6 +150,40 @@ export default function Terminal({
     setSession((s) => s + 1);
   };
 
+  const push = (more: LogLine[]) => setLines((prev) => [...prev, ...more].slice(-maxLines));
+
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    const command = input.trim();
+    setInput("");
+    if (!command) return;
+    history.current = [...history.current, command].slice(-20);
+    historyPos.current = history.current.length;
+    push([{ time: "", level: "cmd", text: command }]);
+    setBusy(true);
+    const out = await runCommand(command, {
+      key,
+      lock: () => setKey(null),
+      clear: () => setLines([]),
+      resume: () => {
+        if (!stopped) return false;
+        resume();
+        return true;
+      },
+    });
+    setBusy(false);
+    push(out);
+    inputRef.current?.focus();
+  }
+
+  function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+    e.preventDefault();
+    const h = history.current;
+    historyPos.current = Math.min(Math.max(historyPos.current + (e.key === "ArrowUp" ? -1 : 1), 0), h.length);
+    setInput(h[historyPos.current] ?? "");
+  }
+
   return (
     <div className="term" role="log" aria-live="polite" aria-label="Live server logs">
       <div className="term-bar">
@@ -150,7 +194,7 @@ export default function Terminal({
         </div>
         <span className="term-title">shipit — live logs — zsh — 80×24</span>
       </div>
-      <div className="term-body mono" ref={bodyRef}>
+      <div className="term-body mono" ref={bodyRef} onClick={() => inputRef.current?.focus()}>
         {lines.map((l, i) => (
           <div key={i} className={`log log-${l.level}`}>
             {l.level === "cmd" ? (
@@ -166,16 +210,37 @@ export default function Terminal({
             )}
           </div>
         ))}
-        <div className="log">
-          <span className="p">$</span>{" "}
-          {stopped ? (
+        {stopped && (
+          <div className="log">
             <button type="button" className="term-resume" onClick={resume}>
               ▶ resume tail
             </button>
-          ) : (
-            <span className="cursor" />
-          )}
-        </div>
+          </div>
+        )}
+        <form className="log term-prompt" onSubmit={submit}>
+          <span className="p">$</span>
+          <input
+            ref={inputRef}
+            className="term-input mono"
+            aria-label="Terminal command"
+            placeholder={busy ? "running…" : "type help"}
+            autoComplete="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            value={input}
+            disabled={busy}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={onKeyDown}
+          />
+        </form>
+      </div>
+      <div className="term-status mono">
+        <LockButton />
+        <span className={`term-state${stopped ? " is-stopped" : ""}`}>
+          <span className="term-state-dot" aria-hidden="true" />
+          {stopped ? "tail stopped" : `tail live · every ${Math.round(pollMs / 1000)}s`}
+        </span>
+        <span className="term-status-right">{key ? "chaos: armed" : "chaos: locked"}</span>
       </div>
     </div>
   );

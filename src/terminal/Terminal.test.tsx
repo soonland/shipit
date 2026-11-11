@@ -100,3 +100,52 @@ describe("Terminal", () => {
     expect(container.querySelectorAll(".log")).toHaveLength(5); // 4 lines + prompt
   });
 });
+
+describe("Terminal prompt", () => {
+  it("runs typed commands, keeps history and clears", async () => {
+    serveSystem();
+    render(<Terminal lineDelayMs={0} pollMs={60_000} stopAfterMs={60_000} />);
+    await screen.findByText("tail -f /var/log/shipit");
+    const input = screen.getByLabelText("Terminal command");
+
+    fireEvent.change(input, { target: { value: "help" } });
+    fireEvent.submit(input.closest("form")!);
+    expect(await screen.findByText(/chaos crash/)).toBeInTheDocument();
+    expect(screen.getByText("help")).toBeInTheDocument(); // echoed command
+
+    fireEvent.keyDown(input, { key: "ArrowUp" });
+    expect(input).toHaveValue("help");
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    expect(input).toHaveValue("");
+    fireEvent.keyDown(input, { key: "a" });
+
+    fireEvent.change(input, { target: { value: "clear" } });
+    fireEvent.submit(input.closest("form")!);
+    await vi.waitFor(() => expect(screen.queryByText(/chaos crash/)).not.toBeInTheDocument());
+  });
+
+  it("ignores an empty submit and resumes a stopped tail with the tail command", async () => {
+    serveSystem();
+    render(<Terminal lineDelayMs={0} pollMs={10} stopAfterMs={30} />);
+    await screen.findByRole("button", { name: /resume tail/ });
+    const input = screen.getByLabelText("Terminal command");
+
+    fireEvent.submit(input.closest("form")!);
+    fireEvent.change(input, { target: { value: "tail" } });
+    fireEvent.submit(input.closest("form")!);
+    await vi.waitFor(() =>
+      expect(screen.queryByRole("button", { name: /resume tail/ })).not.toBeInTheDocument(),
+    );
+  });
+});
+
+describe("Terminal status bar", () => {
+  it("shows the lock, the tail state and the chaos state", async () => {
+    serveSystem();
+    render(<Terminal lineDelayMs={0} pollMs={10} stopAfterMs={30} />);
+    expect(screen.getByRole("button", { name: "Unlock chaos mode" })).toBeInTheDocument();
+    expect(screen.getByText("chaos: locked")).toBeInTheDocument();
+    expect(screen.getByText(/tail live/)).toBeInTheDocument();
+    expect(await screen.findByText("tail stopped")).toBeInTheDocument();
+  });
+});
