@@ -80,7 +80,8 @@ h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.03em;margin-bottom:28px}
 .stage:hover .stage-node{border-color:var(--accent);color:var(--text);transform:translateY(-3px)}
 .stage.is-selected .stage-node{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 4px rgba(122,162,255,.16)}
 .stage-running .stage-node{color:var(--warn);border-color:var(--warn);animation:spin 1s linear infinite;font-size:18px}
-.stage-done .stage-node{background:var(--accent);border-color:var(--accent);color:var(--bg);font-size:18px;font-weight:700}
+.stage.stage-done .stage-node,.stage.stage-done:hover .stage-node{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#0b0d12;font-size:20px;font-weight:800;text-shadow:0 1px 0 rgba(255,255,255,.25)}
+.stage.stage-done.is-selected .stage-node{box-shadow:0 0 0 4px rgba(122,162,255,.22)}
 .stage-title{font-weight:600;font-size:15.5px}
 .stage-where{font-size:11px;color:var(--muted)}
 @keyframes spin{to{transform:rotate(360deg)}}
