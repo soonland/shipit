@@ -13,7 +13,7 @@ type Props = {
 /** Time the progress line takes to reach the next node. */
 const RAIL_MS = 450;
 
-const icon: Record<Status, string> = { idle: "○", running: "◌", done: "✓" };
+const icon: Record<Status, string> = { idle: "○", running: "", done: "✓" }; // running = CSS spinner
 
 export default function Pipeline({ version, revision, timeScale = 1 }: Props) {
   const [selected, setSelected] = useState(0);
