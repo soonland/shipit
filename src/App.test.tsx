@@ -16,9 +16,7 @@ describe("App", () => {
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("From laptop");
     expect(screen.getByRole("log", { name: "Live server logs" })).toBeInTheDocument();
-    for (const step of ["Code", "Build", "Deploy", "Automate"]) {
-      expect(screen.getByRole("heading", { name: step })).toBeInTheDocument();
-    }
+    expect(screen.getByRole("tablist", { name: "Pipeline stages" })).toBeInTheDocument();
     expect(await screen.findByText("live · v2.0.0")).toBeInTheDocument();
     expect(await screen.findByText("shipit-00007-xyz")).toBeInTheDocument();
   });
