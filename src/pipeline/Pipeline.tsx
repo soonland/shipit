@@ -6,13 +6,13 @@ type Status = "idle" | "running" | "done";
 type Props = {
   version: string;
   revision: string;
-  /** Time each stage "runs" during the simulation. */
-  stageMs?: number;
+  /** Multiplies every stage's simulated duration (tests use a small value). */
+  timeScale?: number;
 };
 
 const icon: Record<Status, string> = { idle: "○", running: "◌", done: "✓" };
 
-export default function Pipeline({ version, revision, stageMs = 900 }: Props) {
+export default function Pipeline({ version, revision, timeScale = 1 }: Props) {
   const [selected, setSelected] = useState(0);
   const [statuses, setStatuses] = useState<Status[]>(() => stages.map(() => "idle"));
   const [running, setRunning] = useState(false);
@@ -28,12 +28,14 @@ export default function Pipeline({ version, revision, stageMs = 900 }: Props) {
     setFinished(false);
     setStatuses(stages.map(() => "idle"));
 
-    stages.forEach((_, i) => {
+    let start = 0;
+    stages.forEach((stage, i) => {
+      const ms = stage.simMs * timeScale;
       timers.current.push(
         setTimeout(() => {
           setSelected(i);
           setStatuses((prev) => prev.map((s, j) => (j === i ? "running" : s)));
-        }, i * stageMs),
+        }, start),
         setTimeout(
           () => {
             setStatuses((prev) => prev.map((s, j) => (j === i ? "done" : s)));
@@ -42,9 +44,10 @@ export default function Pipeline({ version, revision, stageMs = 900 }: Props) {
               setFinished(true);
             }
           },
-          i * stageMs + stageMs * 0.85,
+          start + ms * 0.9,
         ),
       );
+      start += ms;
     });
   };
 

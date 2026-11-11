@@ -9,6 +9,8 @@ export type Stage = {
   code: string;
   /** Typical real-world duration, shown in the simulation. */
   duration: string;
+  /** How long the stage runs in the simulation (longer real stages run longer here too). */
+  simMs: number;
 };
 
 export const stages: Stage[] = [
@@ -24,6 +26,7 @@ export const stages: Stage[] = [
     ],
     code: 'git commit -m "feat: interactive pipeline"',
     duration: "1s",
+    simMs: 1200,
   },
   {
     id: "ci",
@@ -38,6 +41,7 @@ export const stages: Stage[] = [
     ],
     code: "pnpm lint && pnpm typecheck && pnpm test:coverage && pnpm build",
     duration: "30s",
+    simMs: 2600,
   },
   {
     id: "release",
@@ -51,6 +55,7 @@ export const stages: Stage[] = [
     ],
     code: "git tag -a v2.1.0 -m \"Release v2.1.0\" && git push origin v2.1.0",
     duration: "5s",
+    simMs: 1500,
   },
   {
     id: "build",
@@ -64,6 +69,7 @@ export const stages: Stage[] = [
     ],
     code: "gcloud run deploy shipit --source . --region northamerica-northeast1",
     duration: "1m",
+    simMs: 3600,
   },
   {
     id: "deploy",
@@ -77,6 +83,7 @@ export const stages: Stage[] = [
     ],
     code: "gcloud run services update-traffic shipit --to-latest",
     duration: "20s",
+    simMs: 2200,
   },
   {
     id: "live",
@@ -90,5 +97,6 @@ export const stages: Stage[] = [
     ],
     code: "curl -fsS $URL/health && curl -fsS $URL/api/info",
     duration: "2s",
+    simMs: 1400,
   },
 ];

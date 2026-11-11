@@ -21,7 +21,7 @@ describe("Pipeline", () => {
   it("simulates a release stage by stage, then reports the live version", () => {
     vi.useFakeTimers();
     try {
-      render(<Pipeline version="2.1.0" revision="shipit-00009-abc" stageMs={100} />);
+      render(<Pipeline version="2.1.0" revision="shipit-00009-abc" timeScale={0.1} />);
       const button = screen.getByRole("button", { name: /simulate a release/ });
 
       fireEvent.click(button);
@@ -31,11 +31,11 @@ describe("Pipeline", () => {
       act(() => vi.advanceTimersByTime(10));
       expect(screen.getByRole("tabpanel")).toHaveTextContent("running");
 
-      act(() => vi.advanceTimersByTime(150));
+      act(() => vi.advanceTimersByTime(140)); // Commit (120ms) done, CI running
       expect(screen.getByRole("tab", { name: /CI/ })).toHaveAttribute("aria-selected", "true");
       expect(screen.getByRole("tab", { name: /Commit/ })).toHaveClass("stage-done");
 
-      act(() => vi.advanceTimersByTime(100 * stages.length));
+      act(() => vi.advanceTimersByTime(stages.reduce((t, s) => t + s.simMs, 0) * 0.1));
       expect(screen.getByRole("status")).toHaveTextContent(
         "pipeline passed · v2.1.0 live · revision shipit-00009-abc",
       );
