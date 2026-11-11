@@ -1,161 +1,159 @@
 {
-  "displayName": "shipit \u2014 Cloud Run",
+  "displayName": "shipit — Cloud Run",
+  "labels": {
+    "app": ""
+  },
   "mosaicLayout": {
     "columns": 48,
     "tiles": [
       {
-        "xPos": 0,
-        "yPos": 0,
-        "width": 48,
         "height": 3,
         "widget": {
-          "title": "",
           "text": {
+            "content": "**shipit** · Cloud Run `northamerica-northeast1` · [live site](https://shipit-116485471187.northamerica-northeast1.run.app) · [repo](https://github.com/soonland/shipit) · scales to zero when idle, so gaps in the charts are normal.",
             "format": "MARKDOWN",
-            "content": "**shipit** \u00b7 Cloud Run `northamerica-northeast1` \u00b7 [live site](https://shipit-116485471187.northamerica-northeast1.run.app) \u00b7 [repo](https://github.com/soonland/shipit) \u00b7 scales to zero when idle, so gaps in the charts are normal."
+            "style": {}
           }
-        }
+        },
+        "width": 48
       },
       {
-        "xPos": 0,
-        "yPos": 3,
-        "width": 12,
         "height": 8,
         "widget": {
-          "title": "Uptime /health (% passing)",
           "scorecard": {
-            "timeSeriesQuery": {
-              "timeSeriesFilter": {
-                "filter": "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" AND resource.type=\"uptime_url\" AND metric.label.check_id=\"shipit-health-mPyRhihDCZ4\"",
-                "aggregation": {
-                  "alignmentPeriod": "300s",
-                  "perSeriesAligner": "ALIGN_FRACTION_TRUE",
-                  "crossSeriesReducer": "REDUCE_MEAN"
-                }
-              }
-            },
             "sparkChartView": {
               "sparkChartType": "SPARK_LINE"
             },
             "thresholds": [
               {
-                "value": 0.99,
                 "color": "YELLOW",
-                "direction": "BELOW"
+                "direction": "BELOW",
+                "value": 0.99
               },
               {
-                "value": 0.9,
                 "color": "RED",
-                "direction": "BELOW"
+                "direction": "BELOW",
+                "value": 0.9
               }
-            ]
-          }
-        }
+            ],
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "aggregation": {
+                  "alignmentPeriod": "300s",
+                  "crossSeriesReducer": "REDUCE_MEAN",
+                  "perSeriesAligner": "ALIGN_FRACTION_TRUE"
+                },
+                "filter": "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" AND resource.type=\"uptime_url\" AND metric.label.check_id=\"shipit-health-mPyRhihDCZ4\""
+              }
+            }
+          },
+          "title": "Uptime /health (% passing)"
+        },
+        "width": 12,
+        "yPos": 3
       },
       {
+        "height": 8,
+        "widget": {
+          "scorecard": {
+            "sparkChartView": {
+              "sparkChartType": "SPARK_LINE"
+            },
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "aggregation": {
+                  "alignmentPeriod": "300s",
+                  "crossSeriesReducer": "REDUCE_SUM",
+                  "perSeriesAligner": "ALIGN_DELTA"
+                },
+                "filter": "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\""
+              }
+            }
+          },
+          "title": "Requests (per 5 min)"
+        },
+        "width": 12,
         "xPos": 12,
-        "yPos": 3,
-        "width": 12,
-        "height": 8,
-        "widget": {
-          "title": "Requests (per 5 min)",
-          "scorecard": {
-            "timeSeriesQuery": {
-              "timeSeriesFilter": {
-                "filter": "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\"",
-                "aggregation": {
-                  "alignmentPeriod": "300s",
-                  "perSeriesAligner": "ALIGN_DELTA",
-                  "crossSeriesReducer": "REDUCE_SUM"
-                }
-              }
-            },
-            "sparkChartView": {
-              "sparkChartType": "SPARK_LINE"
-            }
-          }
-        }
+        "yPos": 3
       },
       {
+        "height": 8,
+        "widget": {
+          "scorecard": {
+            "sparkChartView": {
+              "sparkChartType": "SPARK_LINE"
+            },
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "aggregation": {
+                  "alignmentPeriod": "300s",
+                  "crossSeriesReducer": "REDUCE_MAX",
+                  "perSeriesAligner": "ALIGN_PERCENTILE_95"
+                },
+                "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\""
+              }
+            }
+          },
+          "title": "Latency p95 (ms)"
+        },
+        "width": 12,
         "xPos": 24,
-        "yPos": 3,
-        "width": 12,
-        "height": 8,
-        "widget": {
-          "title": "Latency p95 (ms)",
-          "scorecard": {
-            "timeSeriesQuery": {
-              "timeSeriesFilter": {
-                "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\"",
-                "aggregation": {
-                  "alignmentPeriod": "300s",
-                  "perSeriesAligner": "ALIGN_PERCENTILE_95",
-                  "crossSeriesReducer": "REDUCE_MAX"
-                }
-              }
-            },
-            "sparkChartView": {
-              "sparkChartType": "SPARK_LINE"
-            }
-          }
-        }
+        "yPos": 3
       },
       {
-        "xPos": 36,
-        "yPos": 3,
-        "width": 12,
         "height": 8,
         "widget": {
-          "title": "5xx errors (per 5 min)",
           "scorecard": {
-            "timeSeriesQuery": {
-              "timeSeriesFilter": {
-                "filter": "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\" AND metric.labels.response_code_class=\"5xx\"",
-                "aggregation": {
-                  "alignmentPeriod": "300s",
-                  "perSeriesAligner": "ALIGN_DELTA",
-                  "crossSeriesReducer": "REDUCE_SUM"
-                }
-              }
-            },
             "sparkChartView": {
               "sparkChartType": "SPARK_LINE"
             },
             "thresholds": [
               {
-                "value": 1,
                 "color": "RED",
-                "direction": "ABOVE"
+                "direction": "ABOVE",
+                "value": 1.0
               }
-            ]
-          }
-        }
+            ],
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "aggregation": {
+                  "alignmentPeriod": "300s",
+                  "crossSeriesReducer": "REDUCE_SUM",
+                  "perSeriesAligner": "ALIGN_DELTA"
+                },
+                "filter": "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\" AND metric.labels.response_code_class=\"5xx\""
+              }
+            }
+          },
+          "title": "5xx errors (per 5 min)"
+        },
+        "width": 12,
+        "xPos": 36,
+        "yPos": 3
       },
       {
-        "xPos": 0,
-        "yPos": 11,
-        "width": 24,
         "height": 16,
         "widget": {
           "title": "Requests by response class",
           "xyChart": {
             "dataSets": [
               {
+                "legendTemplate": "${metric.labels.response_code_class}",
+                "plotType": "STACKED_BAR",
+                "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "filter": "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\"",
                     "aggregation": {
                       "alignmentPeriod": "60s",
-                      "perSeriesAligner": "ALIGN_RATE",
                       "crossSeriesReducer": "REDUCE_SUM",
                       "groupByFields": [
                         "metric.label.response_code_class"
-                      ]
-                    }
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\""
                   }
-                },
-                "plotType": "STACKED_BAR",
-                "legendTemplate": "${metric.labels.response_code_class}"
+                }
               }
             ],
             "timeshiftDuration": "0s",
@@ -164,61 +162,60 @@
               "scale": "LINEAR"
             }
           }
-        }
+        },
+        "width": 24,
+        "yPos": 11
       },
       {
-        "xPos": 24,
-        "yPos": 11,
-        "width": 24,
         "height": 16,
         "widget": {
           "title": "Request latency (p50 / p95 / p99)",
           "xyChart": {
             "dataSets": [
               {
+                "legendTemplate": "p50",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\"",
                     "aggregation": {
                       "alignmentPeriod": "60s",
-                      "perSeriesAligner": "ALIGN_PERCENTILE_50",
                       "crossSeriesReducer": "REDUCE_MAX",
-                      "groupByFields": []
-                    }
+                      "perSeriesAligner": "ALIGN_PERCENTILE_50"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\""
                   }
-                },
-                "plotType": "LINE",
-                "legendTemplate": "p50"
+                }
               },
               {
+                "legendTemplate": "p95",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\"",
                     "aggregation": {
                       "alignmentPeriod": "60s",
-                      "perSeriesAligner": "ALIGN_PERCENTILE_95",
                       "crossSeriesReducer": "REDUCE_MAX",
-                      "groupByFields": []
-                    }
+                      "perSeriesAligner": "ALIGN_PERCENTILE_95"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\""
                   }
-                },
-                "plotType": "LINE",
-                "legendTemplate": "p95"
+                }
               },
               {
+                "legendTemplate": "p99",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\"",
                     "aggregation": {
                       "alignmentPeriod": "60s",
-                      "perSeriesAligner": "ALIGN_PERCENTILE_99",
                       "crossSeriesReducer": "REDUCE_MAX",
-                      "groupByFields": []
-                    }
+                      "perSeriesAligner": "ALIGN_PERCENTILE_99"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/request_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\""
                   }
-                },
-                "plotType": "LINE",
-                "legendTemplate": "p99"
+                }
               }
             ],
             "timeshiftDuration": "0s",
@@ -227,33 +224,34 @@
               "scale": "LINEAR"
             }
           }
-        }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 11
       },
       {
-        "xPos": 0,
-        "yPos": 27,
-        "width": 24,
         "height": 16,
         "widget": {
           "title": "Instances (active vs idle)",
           "xyChart": {
             "dataSets": [
               {
+                "legendTemplate": "${metric.labels.state}",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "filter": "metric.type=\"run.googleapis.com/container/instance_count\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\"",
                     "aggregation": {
                       "alignmentPeriod": "60s",
-                      "perSeriesAligner": "ALIGN_MAX",
                       "crossSeriesReducer": "REDUCE_SUM",
                       "groupByFields": [
                         "metric.label.state"
-                      ]
-                    }
+                      ],
+                      "perSeriesAligner": "ALIGN_MAX"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/container/instance_count\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\""
                   }
-                },
-                "plotType": "STACKED_AREA",
-                "legendTemplate": "${metric.labels.state}"
+                }
               }
             ],
             "timeshiftDuration": "0s",
@@ -262,46 +260,45 @@
               "scale": "LINEAR"
             }
           }
-        }
+        },
+        "width": 24,
+        "yPos": 27
       },
       {
-        "xPos": 24,
-        "yPos": 27,
-        "width": 24,
         "height": 16,
         "widget": {
           "title": "Cold starts: container startup latency",
           "xyChart": {
             "dataSets": [
               {
+                "legendTemplate": "p50",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "filter": "metric.type=\"run.googleapis.com/container/startup_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\"",
                     "aggregation": {
                       "alignmentPeriod": "300s",
-                      "perSeriesAligner": "ALIGN_PERCENTILE_50",
                       "crossSeriesReducer": "REDUCE_MAX",
-                      "groupByFields": []
-                    }
+                      "perSeriesAligner": "ALIGN_PERCENTILE_50"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/container/startup_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\""
                   }
-                },
-                "plotType": "LINE",
-                "legendTemplate": "p50"
+                }
               },
               {
+                "legendTemplate": "p99",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "filter": "metric.type=\"run.googleapis.com/container/startup_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\"",
                     "aggregation": {
                       "alignmentPeriod": "300s",
-                      "perSeriesAligner": "ALIGN_PERCENTILE_99",
                       "crossSeriesReducer": "REDUCE_MAX",
-                      "groupByFields": []
-                    }
+                      "perSeriesAligner": "ALIGN_PERCENTILE_99"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/container/startup_latencies\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\""
                   }
-                },
-                "plotType": "LINE",
-                "legendTemplate": "p99"
+                }
               }
             ],
             "timeshiftDuration": "0s",
@@ -310,89 +307,88 @@
               "scale": "LINEAR"
             }
           }
-        }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 27
       },
       {
-        "xPos": 0,
-        "yPos": 43,
-        "width": 16,
         "height": 16,
         "widget": {
           "title": "CPU utilization (p95)",
           "xyChart": {
             "dataSets": [
               {
+                "legendTemplate": "cpu p95",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "filter": "metric.type=\"run.googleapis.com/container/cpu/utilizations\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\"",
                     "aggregation": {
                       "alignmentPeriod": "60s",
-                      "perSeriesAligner": "ALIGN_PERCENTILE_95",
                       "crossSeriesReducer": "REDUCE_MAX",
-                      "groupByFields": []
-                    }
+                      "perSeriesAligner": "ALIGN_PERCENTILE_95"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/container/cpu/utilizations\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\""
                   }
-                },
-                "plotType": "LINE",
-                "legendTemplate": "cpu p95"
+                }
               }
             ],
             "timeshiftDuration": "0s"
           }
-        }
+        },
+        "width": 16,
+        "yPos": 43
       },
       {
-        "xPos": 16,
-        "yPos": 43,
-        "width": 16,
         "height": 16,
         "widget": {
           "title": "Memory utilization (p95)",
           "xyChart": {
             "dataSets": [
               {
+                "legendTemplate": "memory p95",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "filter": "metric.type=\"run.googleapis.com/container/memory/utilizations\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\"",
                     "aggregation": {
                       "alignmentPeriod": "60s",
-                      "perSeriesAligner": "ALIGN_PERCENTILE_95",
                       "crossSeriesReducer": "REDUCE_MAX",
-                      "groupByFields": []
-                    }
+                      "perSeriesAligner": "ALIGN_PERCENTILE_95"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/container/memory/utilizations\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\""
                   }
-                },
-                "plotType": "LINE",
-                "legendTemplate": "memory p95"
+                }
               }
             ],
             "timeshiftDuration": "0s"
           }
-        }
+        },
+        "width": 16,
+        "xPos": 16,
+        "yPos": 43
       },
       {
-        "xPos": 32,
-        "yPos": 43,
-        "width": 16,
         "height": 16,
         "widget": {
           "title": "Billable instance time",
           "xyChart": {
             "dataSets": [
               {
+                "legendTemplate": "billable s/s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "filter": "metric.type=\"run.googleapis.com/container/billable_instance_time\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\"",
                     "aggregation": {
                       "alignmentPeriod": "60s",
-                      "perSeriesAligner": "ALIGN_RATE",
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": []
-                    }
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"run.googleapis.com/container/billable_instance_time\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\""
                   }
-                },
-                "plotType": "LINE",
-                "legendTemplate": "billable s/s"
+                }
               }
             ],
             "timeshiftDuration": "0s",
@@ -401,33 +397,34 @@
               "scale": "LINEAR"
             }
           }
-        }
+        },
+        "width": 16,
+        "xPos": 32,
+        "yPos": 43
       },
       {
-        "xPos": 0,
-        "yPos": 59,
-        "width": 24,
         "height": 16,
         "widget": {
           "title": "Uptime check latency by region",
           "xyChart": {
             "dataSets": [
               {
+                "legendTemplate": "${metric.labels.checker_location}",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "timeSeriesFilter": {
-                    "filter": "metric.type=\"monitoring.googleapis.com/uptime_check/request_latency\" AND resource.type=\"uptime_url\" AND metric.label.check_id=\"shipit-health-mPyRhihDCZ4\"",
                     "aggregation": {
                       "alignmentPeriod": "300s",
-                      "perSeriesAligner": "ALIGN_MEAN",
                       "crossSeriesReducer": "REDUCE_MEAN",
                       "groupByFields": [
                         "metric.label.checker_location"
-                      ]
-                    }
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"monitoring.googleapis.com/uptime_check/request_latency\" AND resource.type=\"uptime_url\" AND metric.label.check_id=\"shipit-health-mPyRhihDCZ4\""
                   }
-                },
-                "plotType": "LINE",
-                "legendTemplate": "${metric.labels.checker_location}"
+                }
               }
             ],
             "timeshiftDuration": "0s",
@@ -436,26 +433,25 @@
               "scale": "LINEAR"
             }
           }
-        }
+        },
+        "width": 24,
+        "yPos": 59
       },
       {
-        "xPos": 24,
-        "yPos": 59,
-        "width": 24,
         "height": 16,
         "widget": {
-          "title": "Recent logs (errors & warnings)",
           "logsPanel": {
             "filter": "resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\" AND severity>=WARNING",
             "resourceNames": [
               "projects/devops-playground-14386"
             ]
-          }
-        }
+          },
+          "title": "Recent logs (errors & warnings)"
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 59
       }
     ]
-  },
-  "labels": {
-    "app": ""
   }
 }
