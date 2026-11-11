@@ -1,10 +1,10 @@
-:root{--bg:#0b0d12;--panel:#12151d;--line:#232837;--text:#e8ebf2;--muted:#8a93a8;--accent:#7cf2c4;--accent2:#7aa2ff;--warn:#ffcf6e}
+:root{--bg:#0b0d12;--panel:#12151d;--line:#232837;--text:#e8ebf2;--muted:#8a93a8;--accent:#7aa2ff;--accent2:#b48cff;--warn:#ffcf6e}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:"Space Grotesk",system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
 body::before{content:"";position:fixed;inset:0;background:
-  radial-gradient(600px 400px at 85% -10%,rgba(122,162,255,.18),transparent 60%),
-  radial-gradient(500px 400px at -10% 30%,rgba(124,242,196,.12),transparent 60%);pointer-events:none;z-index:-1}
+  radial-gradient(600px 400px at 85% -10%,rgba(180,140,255,.16),transparent 60%),
+  radial-gradient(500px 400px at -10% 30%,rgba(122,162,255,.14),transparent 60%);pointer-events:none;z-index:-1}
 .mono{font-family:"JetBrains Mono",monospace}
 .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
 nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
@@ -43,7 +43,7 @@ h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),var(--acc
 .log-text{white-space:pre-wrap;word-break:break-word}
 .log-cmd{color:var(--text);margin-top:4px}
 .log-info .log-tag{color:var(--accent2)}
-.log-debug .log-tag{color:#9b8cff}
+.log-debug .log-tag{color:#5eead4}
 .log-debug .log-text{color:#6f7891}
 .log-ok .log-tag{color:var(--accent)}
 .log-warn .log-tag,.log-warn .log-text{color:var(--warn)}
@@ -78,7 +78,7 @@ h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.03em;margin-bottom:28px}
 .stage:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .stage-node{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:13px;color:var(--muted);background:var(--panel);border:1px solid var(--line);transition:.3s}
 .stage:hover .stage-node{border-color:var(--accent);color:var(--text);transform:translateY(-3px)}
-.stage.is-selected .stage-node{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 4px rgba(124,242,196,.12)}
+.stage.is-selected .stage-node{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 4px rgba(122,162,255,.16)}
 .stage-running .stage-node{color:var(--warn);border-color:var(--warn);animation:spin 1s linear infinite;font-size:18px}
 .stage-done .stage-node{background:var(--accent);border-color:var(--accent);color:var(--bg);font-size:18px;font-weight:700}
 .stage-title{font-weight:600;font-size:15.5px}
