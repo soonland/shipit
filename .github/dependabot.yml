@@ -21,6 +21,9 @@ updates:
     ignore:
       - dependency-name: '*'
         update-types: ['version-update:semver-patch']
+      # typescript-eslint does not support TypeScript 7 yet; remove once it does.
+      - dependency-name: typescript
+        versions: ['>=7']
 
   - package-ecosystem: docker
     directory: /
