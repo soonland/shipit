@@ -111,3 +111,28 @@ h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.03em;margin-bottom:28px}
 
 footer{border-top:1px solid var(--line);padding:30px 0 50px;color:var(--muted);font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 @media(max-width:760px){.stats{grid-template-columns:1fr}.hero{padding:40px 0}}
+
+/* ── neon variant ─────────────────────────────────────────── */
+:root{--bg:#06060c;--panel:#0d0d18;--line:#1e1d33;--accent:#00c8ff;--accent2:#c040ff;--warn:#ffe14d;--neon-a:0 0 6px rgba(0,200,255,.9),0 0 18px rgba(0,200,255,.55),0 0 40px rgba(0,200,255,.25);--neon-b:0 0 6px rgba(192,64,255,.9),0 0 18px rgba(192,64,255,.55),0 0 40px rgba(192,64,255,.25)}
+body::before{background:
+  radial-gradient(700px 450px at 85% -10%,rgba(192,64,255,.28),transparent 60%),
+  radial-gradient(600px 450px at -10% 30%,rgba(0,200,255,.22),transparent 60%)}
+h1 em{filter:drop-shadow(0 0 14px rgba(0,200,255,.45)) drop-shadow(0 0 28px rgba(192,64,255,.35))}
+.eyebrow,.logo span{text-shadow:var(--neon-a)}
+.dot{box-shadow:var(--neon-a)}
+.pill{border-color:rgba(0,200,255,.35);box-shadow:0 0 14px -4px rgba(0,200,255,.5)}
+.term{border-color:rgba(0,200,255,.35);box-shadow:0 0 0 .5px rgba(0,0,0,.8),0 0 24px -6px rgba(0,200,255,.45),0 0 60px -20px rgba(192,64,255,.5),0 30px 80px -20px rgba(0,0,0,.8)}
+.term .p,.log-ok .log-tag{color:var(--accent);text-shadow:0 0 8px rgba(0,200,255,.7)}
+.log-info .log-tag{color:var(--accent2);text-shadow:0 0 8px rgba(192,64,255,.7)}
+.log-debug .log-tag{color:#00ffc6;text-shadow:0 0 8px rgba(0,255,198,.6)}
+.log-warn .log-tag,.log-warn .log-text{text-shadow:0 0 8px rgba(255,225,77,.5)}
+.cursor::after{text-shadow:var(--neon-a)}
+.pipe-run{box-shadow:0 0 18px -2px rgba(0,200,255,.6),0 0 30px -6px rgba(192,64,255,.6)}
+.pipe-run:hover:not(:disabled){box-shadow:0 0 24px rgba(0,200,255,.8),0 0 44px rgba(192,64,255,.6)}
+.pipe-rail::after{box-shadow:0 0 10px rgba(0,200,255,.9),0 0 22px rgba(192,64,255,.6)}
+.stage.is-selected .stage-node{box-shadow:0 0 0 4px rgba(0,200,255,.15),var(--neon-a)}
+.stage.stage-done .stage-node,.stage.stage-done:hover .stage-node{box-shadow:0 0 14px rgba(0,200,255,.7),0 0 26px rgba(192,64,255,.45)}
+.stage-running .stage-node::before{filter:drop-shadow(0 0 4px var(--warn))}
+.pipe-panel{border-color:rgba(192,64,255,.3);box-shadow:0 0 30px -12px rgba(192,64,255,.45)}
+.pipe-code{border-color:rgba(0,200,255,.25)}
+.pipe-result{text-shadow:var(--neon-a)}
