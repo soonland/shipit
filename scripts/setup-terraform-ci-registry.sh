@@ -15,6 +15,9 @@ bind() { gcloud projects add-iam-policy-binding "$PROJECT_ID" --member "serviceA
 # plan (read-only): see the repository and which APIs are enabled
 bind "$PLAN_SA" roles/artifactregistry.reader
 bind "$PLAN_SA" roles/serviceusage.serviceUsageViewer
+# read (only) who has access to THIS repository, to plan its IAM member
+gcloud artifacts repositories add-iam-policy-binding "$REPO" --project "$PROJECT_ID" --location "$REGION" \
+  --member "serviceAccount:$PLAN_SA" --role roles/iam.securityReviewer --quiet >/dev/null
 
 # apply: enable APIs, and administer THIS repository only (cleanup policy, IAM)
 bind "$APPLY_SA" roles/serviceusage.serviceUsageAdmin
