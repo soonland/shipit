@@ -1,9 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { bootLines, heartbeatLine, offlineLine } from "./logs";
+import {
+  bootLines,
+  heartbeatLine,
+  hiddenLine,
+  offlineLine,
+  resumedLine,
+  stoppedLine,
+  visibleLine,
+} from "./logs";
 import type { LogLine, SystemInfo } from "./types";
 
 type Props = {
+  /** Time between heartbeats. */
   pollMs?: number;
+  /** Stop tailing after this long, to save requests (and let Cloud Run scale to zero). */
+  stopAfterMs?: number;
+  /** Delay between boot lines (0 = print at once). */
   lineDelayMs?: number;
   maxLines?: number;
 };
@@ -14,6 +26,23 @@ const prefersReducedMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Resolves when the tab is visible (immediately if it already is) or the signal aborts. */
+function whenVisible(signal: AbortSignal): Promise<void> {
+  if (!document.hidden) return Promise.resolve();
+  return new Promise((resolve) => {
+    const done = () => {
+      document.removeEventListener("visibilitychange", onChange);
+      signal.removeEventListener("abort", done);
+      resolve();
+    };
+    const onChange = () => {
+      if (!document.hidden) done();
+    };
+    document.addEventListener("visibilitychange", onChange);
+    signal.addEventListener("abort", done);
+  });
+}
 
 async function fetchSystem(signal: AbortSignal): Promise<{ sys: SystemInfo; rtt: number }> {
   const t0 = performance.now();
@@ -31,52 +60,85 @@ const tags: Record<LogLine["level"], string> = {
   warn: "WARN",
 };
 
-export default function Terminal({ pollMs = 4000, lineDelayMs = 140, maxLines = 60 }: Props) {
+export default function Terminal({
+  pollMs = 10_000,
+  stopAfterMs = 120_000,
+  lineDelayMs = 140,
+  maxLines = 60,
+}: Props) {
   const [lines, setLines] = useState<LogLine[]>([]);
+  const [session, setSession] = useState(0); // 0 = first visit (boot), then one per resume
+  const [stopped, setStopped] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const controller = new AbortController();
+    const { signal } = controller;
     const delay = prefersReducedMotion() ? 0 : lineDelayMs;
     const push = (l: LogLine) => setLines((prev) => [...prev, l].slice(-maxLines));
 
-    (async () => {
-      // Boot: wait for the server, then print the sequence line by line.
+    async function boot() {
       for (;;) {
+        await whenVisible(signal);
         try {
-          const { sys, rtt } = await fetchSystem(controller.signal);
+          const { sys, rtt } = await fetchSystem(signal);
           for (const l of bootLines(sys, rtt)) {
-            if (controller.signal.aborted) return;
+            if (signal.aborted) return;
             push(l);
             if (delay) await sleep(delay);
           }
-          break;
+          return;
         } catch {
-          if (controller.signal.aborted) return;
+          if (signal.aborted) return;
           push(offlineLine());
           await sleep(pollMs);
         }
       }
-      // Tail: one heartbeat per poll.
-      while (!controller.signal.aborted) {
+    }
+
+    async function tail() {
+      const deadline = Date.now() + stopAfterMs;
+      while (!signal.aborted) {
         await sleep(pollMs);
-        if (controller.signal.aborted) return;
+        if (document.hidden) {
+          push(hiddenLine());
+          await whenVisible(signal);
+          if (signal.aborted) return;
+          push(visibleLine());
+        }
+        if (signal.aborted) return;
+        if (Date.now() >= deadline) {
+          push(stoppedLine(stopAfterMs));
+          setStopped(true);
+          return;
+        }
         try {
-          const { sys, rtt } = await fetchSystem(controller.signal);
+          const { sys, rtt } = await fetchSystem(signal);
           push(heartbeatLine(sys, rtt));
         } catch {
-          if (!controller.signal.aborted) push(offlineLine());
+          if (!signal.aborted) push(offlineLine());
         }
       }
+    }
+
+    (async () => {
+      if (session === 0) await boot();
+      else push(resumedLine());
+      if (!signal.aborted) await tail();
     })();
 
     return () => controller.abort();
-  }, [pollMs, lineDelayMs, maxLines]);
+  }, [session, pollMs, stopAfterMs, lineDelayMs, maxLines]);
 
   useEffect(() => {
     const el = bodyRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [lines]);
+  }, [lines, stopped]);
+
+  const resume = () => {
+    setStopped(false);
+    setSession((s) => s + 1);
+  };
 
   return (
     <div className="term" role="log" aria-live="polite" aria-label="Live server logs">
@@ -103,7 +165,14 @@ export default function Terminal({ pollMs = 4000, lineDelayMs = 140, maxLines = 
           </div>
         ))}
         <div className="log">
-          <span className="p">$</span> <span className="cursor" />
+          <span className="p">$</span>{" "}
+          {stopped ? (
+            <button type="button" className="term-resume" onClick={resume}>
+              ▶ resume tail
+            </button>
+          ) : (
+            <span className="cursor" />
+          )}
         </div>
       </div>
     </div>

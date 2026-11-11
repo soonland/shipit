@@ -37,6 +37,9 @@ h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),var(--acc
 .log-debug .log-text{color:#6f7891}
 .log-ok .log-tag{color:var(--accent)}
 .log-warn .log-tag,.log-warn .log-text{color:var(--warn)}
+
+.term-resume{font:inherit;color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:6px;padding:0 10px;cursor:pointer;transition:.2s}
+.term-resume:hover,.term-resume:focus-visible{background:var(--accent);color:var(--bg);outline:none}
 @keyframes logIn{from{opacity:0;transform:translateY(3px)}}
 @media(prefers-reduced-motion:reduce){.log{animation:none}.cursor::after,.dot{animation:none}}
 @media(max-width:560px){.log-time{display:none}.term-body{font-size:12px;height:300px}}

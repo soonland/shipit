@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { bootLines, clock, formatUptime, heartbeatLine, offlineLine } from "./logs";
+import {
+  bootLines,
+  clock,
+  formatDuration,
+  formatUptime,
+  heartbeatLine,
+  hiddenLine,
+  offlineLine,
+  resumedLine,
+  stoppedLine,
+  visibleLine,
+} from "./logs";
 import { system } from "../test/fixtures";
 
 describe("formatUptime", () => {
@@ -61,5 +72,25 @@ describe("heartbeatLine", () => {
 describe("offlineLine", () => {
   it("is a warning", () => {
     expect(offlineLine().level).toBe("warn");
+  });
+});
+
+describe("formatDuration", () => {
+  it.each([
+    [120_000, "2 min"],
+    [60_000, "1 min"],
+    [90_000, "90s"],
+    [500, "1s"],
+  ])("%i ms → %s", (ms, out) => {
+    expect(formatDuration(ms)).toBe(out);
+  });
+});
+
+describe("tail state lines", () => {
+  it("describes pausing, resuming and stopping", () => {
+    expect(hiddenLine().text).toBe("tab hidden · tail paused");
+    expect(visibleLine().text).toBe("tab visible · tail resumed");
+    expect(stoppedLine(120_000).text).toBe("tail stopped after 2 min to save requests");
+    expect(resumedLine()).toMatchObject({ level: "cmd", text: "tail -f /var/log/shipit" });
   });
 });

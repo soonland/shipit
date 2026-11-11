@@ -42,3 +42,13 @@ export function heartbeatLine(sys: SystemInfo, rttMs: number): LogLine {
 }
 
 export const offlineLine = (): LogLine => line("warn", "GET /api/system failed · retrying…");
+
+export function formatDuration(ms: number): string {
+  return ms >= 60_000 && ms % 60_000 === 0 ? `${ms / 60_000} min` : `${Math.round(ms / 1000)}s`;
+}
+
+export const hiddenLine = (): LogLine => line("debug", "tab hidden · tail paused");
+export const visibleLine = (): LogLine => line("debug", "tab visible · tail resumed");
+export const stoppedLine = (afterMs: number): LogLine =>
+  line("info", `tail stopped after ${formatDuration(afterMs)} to save requests`);
+export const resumedLine = (): LogLine => line("cmd", "tail -f /var/log/shipit");
