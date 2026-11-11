@@ -1,14 +1,6 @@
 import { useRuntimeInfo } from "./useRuntimeInfo";
 import Terminal from "./terminal/Terminal";
-
-type Step = { title: string; text: string; next?: boolean };
-
-const steps: Step[] = [
-  { title: "Code", text: "A React + TypeScript app and a Dockerfile." },
-  { title: "Build", text: "Cloud Build compiles it and packages a container image." },
-  { title: "Deploy", text: "Cloud Run serves it over HTTPS with a new revision." },
-  { title: "Automate", text: "Every git push deploys automatically. CI/CD.", next: true },
-];
+import Pipeline from "./pipeline/Pipeline";
 
 export default function App() {
   const { version, revision, started } = useRuntimeInfo();
@@ -42,14 +34,7 @@ export default function App() {
 
       <section>
         <h2>The pipeline</h2>
-        <div className="pipeline">
-          {steps.map((s) => (
-            <div key={s.title} className={s.next ? "step next" : "step"}>
-              <h3>{s.title}</h3>
-              <p>{s.text}</p>
-            </div>
-          ))}
-        </div>
+        <Pipeline version={version} revision={revision} />
       </section>
 
       <section>
