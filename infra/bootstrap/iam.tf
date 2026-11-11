@@ -54,3 +54,24 @@ resource "google_artifact_registry_repository_iam_member" "ci" {
   role       = each.value
   member     = local.sa[each.key]
 }
+
+# The Cloud Run service (managed by the main stack): plan reads it and its
+# public-access setting, apply changes its settings.
+resource "google_cloud_run_v2_service_iam_member" "ci" {
+  for_each = {
+    github-tf-plan  = "roles/run.viewer"
+    github-tf-apply = "roles/run.admin"
+  }
+
+  location = var.region
+  name     = "shipit"
+  role     = each.value
+  member   = local.sa[each.key]
+}
+
+# Apply sets the service's identity, which requires acting as shipit-runtime.
+resource "google_service_account_iam_member" "apply_acts_as_runtime" {
+  service_account_id = google_service_account.this["shipit-runtime"].name
+  role               = "roles/iam.serviceAccountUser"
+  member             = local.sa["github-tf-apply"]
+}
