@@ -47,7 +47,7 @@ jobs:
 
       - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
 
-      # Same runtime settings as production (deploy.yml), plus --no-traffic and a tag.
+      # Same runtime settings as production (managed by Terraform), plus --no-traffic and a tag.
       - name: Deploy (no traffic)
         run: |
           gcloud run deploy "$SERVICE" \
@@ -57,13 +57,6 @@ jobs:
             --no-traffic \
             --tag "$TAG" \
             --update-env-vars "PREVIEW_PR=$PR" \
-            --service-account "shipit-runtime@$PROJECT_ID.iam.gserviceaccount.com" \
-            --max-instances 3 \
-            --memory 256Mi \
-            --cpu 1 \
-            --concurrency 80 \
-            --timeout 60 \
-            --liveness-probe httpGet.path=/health,httpGet.port=8080,periodSeconds=30,timeoutSeconds=5,failureThreshold=3 \
             --quiet
 
       - name: Find preview URL
