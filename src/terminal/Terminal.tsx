@@ -143,10 +143,12 @@ export default function Terminal({
   return (
     <div className="term" role="log" aria-live="polite" aria-label="Live server logs">
       <div className="term-bar">
-        <i />
-        <i />
-        <i />
-        <span className="term-title mono">shipit — live logs</span>
+        <div className="traffic" aria-hidden="true">
+          <span className="tl tl-close" />
+          <span className="tl tl-min" />
+          <span className="tl tl-max" />
+        </div>
+        <span className="term-title">shipit — live logs — zsh — 80×24</span>
       </div>
       <div className="term-body mono" ref={bodyRef}>
         {lines.map((l, i) => (
