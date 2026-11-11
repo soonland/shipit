@@ -3,6 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { createChaos } from "./chaos.js";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "dist");
 const { version } = JSON.parse(fs.readFileSync(new URL("./package.json", import.meta.url)));
@@ -14,6 +15,7 @@ const info = {
   started: new Date(bootedAt).toISOString().replace("T", " ").slice(0, 19) + " UTC",
 };
 
+const chaos = createChaos();
 let requests = 0;
 let systemCalls = 0;
 
@@ -80,6 +82,7 @@ http
       res.writeHead(200, { "Content-Type": "text/plain" });
       return res.end("ok");
     }
+    if (await chaos(req, res, url.pathname)) return;
     if (url.pathname === "/api/info") return json(res, info);
     if (url.pathname === "/api/system") return json(res, await system());
 

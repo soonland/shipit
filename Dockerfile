@@ -10,7 +10,7 @@ RUN pnpm build
 # Stage 2: small runtime image with only the server + built files
 FROM node:24-slim
 WORKDIR /app
-COPY package.json server.js ./
+COPY package.json server.js chaos.js ./
 COPY --from=build /app/dist ./dist
 USER node
 CMD ["node", "server.js"]

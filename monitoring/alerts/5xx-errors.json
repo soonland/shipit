@@ -1,0 +1,36 @@
+{
+  "displayName": "shipit: 5xx errors",
+  "combiner": "OR",
+  "severity": "ERROR",
+  "conditions": [
+    {
+      "displayName": "Any 5xx response in 5 minutes",
+      "conditionThreshold": {
+        "filter": "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"shipit\" AND metric.labels.response_code_class=\"5xx\"",
+        "aggregations": [
+          {
+            "alignmentPeriod": "300s",
+            "perSeriesAligner": "ALIGN_DELTA",
+            "crossSeriesReducer": "REDUCE_SUM"
+          }
+        ],
+        "comparison": "COMPARISON_GT",
+        "thresholdValue": 0,
+        "duration": "0s",
+        "trigger": {
+          "count": 1
+        }
+      }
+    }
+  ],
+  "notificationChannels": [
+    "projects/devops-playground-14386/notificationChannels/11756930934441046895"
+  ],
+  "alertStrategy": {
+    "autoClose": "1800s"
+  },
+  "documentation": {
+    "mimeType": "text/markdown",
+    "content": "**The server returned 5xx errors.** Look at the logs panel on the dashboard (severity \u2265 WARNING).\n\n[Dashboard](https://console.cloud.google.com/monitoring/dashboards/builder/cf717913-54db-4263-a4f3-fcc4085fc2c7?project=devops-playground-14386) \u00b7 [Live site](https://shipit-116485471187.northamerica-northeast1.run.app)"
+  }
+}

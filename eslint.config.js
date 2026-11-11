@@ -17,7 +17,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["server.js", "eslint.config.js"],
+    files: ["server.js", "chaos.js", "chaos.test.js", "eslint.config.js"],
     extends: [js.configs.recommended],
     languageOptions: { globals: globals.node },
   },

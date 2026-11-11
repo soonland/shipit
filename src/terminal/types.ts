@@ -15,6 +15,6 @@ export type SystemInfo = {
   coldStart: boolean;
 };
 
-export type Level = "cmd" | "info" | "debug" | "ok" | "warn";
+export type Level = "cmd" | "info" | "debug" | "ok" | "warn" | "error";
 
 export type LogLine = { time: string; level: Level; text: string };
