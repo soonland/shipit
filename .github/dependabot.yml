@@ -1,0 +1,53 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    # Wait before proposing a brand-new release: a compromised or yanked version is usually caught
+    # within days. Security updates are not delayed.
+    cooldown:
+      default-days: 3
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      dev-dependencies:
+        dependency-type: development
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-patch']
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 3
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore
+      include: scope
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-patch']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 3
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-patch']
