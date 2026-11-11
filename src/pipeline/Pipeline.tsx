@@ -76,6 +76,7 @@ export default function Pipeline({ version, revision, timeScale = 1 }: Props) {
           {
             "--progress": `${(Math.min(doneCount, stages.length - 1) / (stages.length - 1)) * 100}%`,
             "--rail-ms": `${RAIL_MS * timeScale}ms`,
+            "--n": stages.length,
           } as CSSProperties
         }
       >
