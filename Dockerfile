@@ -1,5 +1,5 @@
 # Stage 1: build the React app
-FROM node:24-slim AS build
+FROM node:26-slim AS build
 WORKDIR /app
 RUN corepack enable
 COPY package.json pnpm-lock.yaml ./
@@ -8,7 +8,7 @@ COPY . .
 RUN pnpm build
 
 # Stage 2: small runtime image with only the server + built files
-FROM node:24-slim
+FROM node:26-slim
 WORKDIR /app
 COPY package.json server.js ./
 COPY --from=build /app/dist ./dist
