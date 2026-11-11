@@ -21,3 +21,18 @@ describe("App", () => {
     expect(await screen.findByText("shipit-00007-xyz")).toBeInTheDocument();
   });
 });
+
+describe("App preview badge", () => {
+  it("shows the PR number instead of the version on a preview deployment", async () => {
+    vi.spyOn(globalThis, "fetch").mockImplementation(
+      routeFetch({
+        "/api/info": () =>
+          jsonResponse({ version: "2.3.1", revision: "shipit-00042-pr", started: "now", preview: 16 }),
+        "/api/system": () => jsonResponse(system()),
+      }),
+    );
+    render(<App />);
+    expect(await screen.findByText("preview · PR #16")).toBeInTheDocument();
+    expect(screen.queryByText(/live · v/)).not.toBeInTheDocument();
+  });
+});

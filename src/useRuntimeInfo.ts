@@ -4,9 +4,11 @@ export type RuntimeInfo = {
   version: string;
   revision: string;
   started: string;
+  /** PR number when this is a preview deployment, otherwise null. */
+  preview?: number | null;
 };
 
-const fallback: RuntimeInfo = { version: "dev", revision: "local", started: "—" };
+const fallback: RuntimeInfo = { version: "dev", revision: "local", started: "—", preview: null };
 
 export function useRuntimeInfo(): RuntimeInfo {
   const [info, setInfo] = useState<RuntimeInfo>(fallback);

@@ -112,6 +112,9 @@ h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.03em;margin-bottom:28px}
 footer{border-top:1px solid var(--line);padding:30px 0 50px;color:var(--muted);font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 @media(max-width:760px){.stats{grid-template-columns:1fr}.hero{padding:40px 0}}
 
+.pill-preview{color:var(--warn);border-color:rgba(255,225,77,.5);box-shadow:0 0 14px -4px rgba(255,225,77,.6)}
+.pill-preview .dot{background:var(--warn);box-shadow:0 0 8px var(--warn)}
+
 /* terminal prompt + chaos */
 .term-prompt{align-items:center;gap:8px;margin-top:4px}
 .term-input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--text);font-size:inherit;caret-color:var(--accent);padding:0}

@@ -23,7 +23,7 @@ const devApi = (): Plugin => ({
       if (!(await chaos(req, res, pathname))) next();
     });
     server.middlewares.use("/api/info", (_req, res) => {
-      send(res, { version: pkg.version, revision: "dev", started });
+      send(res, { version: pkg.version, revision: "dev", started, preview: null });
     });
     server.middlewares.use("/api/system", (_req, res) => {
       requests += 1;

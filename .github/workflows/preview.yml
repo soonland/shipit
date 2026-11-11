@@ -1,0 +1,135 @@
+name: Preview
+
+# Every PR gets its own URL: a Cloud Run revision with no traffic and a pr-<number> tag.
+# Production traffic never moves. Closing the PR removes the tag (and the URL).
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    paths-ignore:
+      - '**.md'
+      - 'infra/**'
+      - 'monitoring/**'
+      - '.github/dependabot.yml'
+
+permissions:
+  contents: read
+  id-token: write # keyless sign-in to Google
+  pull-requests: write # preview comment
+
+# Same group as the production deploy: updates to the service never overlap.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  PROJECT_ID: devops-playground-14386
+  REGION: northamerica-northeast1
+  SERVICE: shipit
+  PR: ${{ github.event.pull_request.number }}
+  TAG: pr-${{ github.event.pull_request.number }}
+
+jobs:
+  deploy:
+    name: Deploy preview
+    # Same-repo PRs only (forks get no Google access), and not Dependabot (no OIDC token).
+    if: >-
+      github.event.action != 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+
+      - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
+
+      # Same runtime settings as production (deploy.yml), plus --no-traffic and a tag.
+      - name: Deploy (no traffic)
+        run: |
+          gcloud run deploy "$SERVICE" \
+            --project "$PROJECT_ID" \
+            --region "$REGION" \
+            --source . \
+            --no-traffic \
+            --tag "$TAG" \
+            --update-env-vars "PREVIEW_PR=$PR" \
+            --service-account "shipit-runtime@$PROJECT_ID.iam.gserviceaccount.com" \
+            --max-instances 3 \
+            --memory 256Mi \
+            --cpu 1 \
+            --concurrency 80 \
+            --timeout 60 \
+            --liveness-probe httpGet.path=/health,httpGet.port=8080,periodSeconds=30,timeoutSeconds=5,failureThreshold=3 \
+            --quiet
+
+      - name: Find preview URL
+        id: preview
+        run: |
+          JSON=$(gcloud run services describe "$SERVICE" --project "$PROJECT_ID" --region "$REGION" --format=json)
+          echo "url=$(jq -r --arg t "$TAG" '.status.traffic[] | select(.tag == $t) | .url' <<<"$JSON")" >> "$GITHUB_OUTPUT"
+          echo "revision=$(jq -r --arg t "$TAG" '.status.traffic[] | select(.tag == $t) | .revisionName' <<<"$JSON")" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke test
+        env:
+          URL: ${{ steps.preview.outputs.url }}
+        run: |
+          curl -fsS "$URL/health"
+          echo
+          curl -fsS "$URL/api/info"
+
+      - name: Comment on the PR
+        uses: actions/github-script@v9
+        env:
+          URL: ${{ steps.preview.outputs.url }}
+          REVISION: ${{ steps.preview.outputs.revision }}
+        with:
+          script: |
+            const marker = '<!-- preview -->';
+            const body = `${marker}\n### 🔎 Preview\n**${process.env.URL}**\n\nRevision \`${process.env.REVISION}\` · commit ${context.payload.pull_request.head.sha.slice(0, 7)} · no production traffic.\nRemoved when this PR is closed.`;
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const mine = comments.find((c) => c.body?.startsWith(marker));
+            if (mine) await github.rest.issues.updateComment({ owner, repo, comment_id: mine.id, body });
+            else await github.rest.issues.createComment({ owner, repo, issue_number, body });
+
+  cleanup:
+    name: Remove preview
+    if: >-
+      github.event.action == 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+
+      - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
+
+      - name: Remove the tag
+        run: |
+          if gcloud run services describe "$SERVICE" --project "$PROJECT_ID" --region "$REGION" \
+               --format=json | jq -e --arg t "$TAG" '.status.traffic[] | select(.tag == $t)' >/dev/null; then
+            gcloud run services update-traffic "$SERVICE" --project "$PROJECT_ID" --region "$REGION" \
+              --remove-tags "$TAG" --quiet
+          else
+            echo "No $TAG tag, nothing to remove."
+          fi
+
+      - name: Update the PR comment
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const marker = '<!-- preview -->';
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const mine = comments.find((c) => c.body?.startsWith(marker));
+            if (mine) await github.rest.issues.updateComment({ owner, repo, comment_id: mine.id,
+              body: `${marker}\n### 🔎 Preview\n~~removed~~: this PR is closed.` });
