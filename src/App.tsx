@@ -1,4 +1,5 @@
 import { useRuntimeInfo } from "./useRuntimeInfo";
+import Terminal from "./terminal/Terminal";
 
 type Step = { title: string; text: string; next?: boolean };
 
@@ -36,21 +37,7 @@ export default function App() {
           Registry and served by Cloud Run. It scales to zero when nobody's watching.
         </p>
 
-        <div className="term">
-          <div className="term-bar">
-            <i />
-            <i />
-            <i />
-          </div>
-          <pre className="mono">
-            <span className="p">$</span> gcloud run deploy shipit --source .{"\n"}
-            Building using Dockerfile...           <span className="ok">done</span>{"\n"}
-            Creating Revision...                   <span className="ok">done</span>{"\n"}
-            Routing traffic...                     <span className="ok">done</span>{"\n"}
-            Revision <span className="u">{revision}</span> is serving 100% of traffic.{"\n"}
-            <span className="p">$</span> <span className="cursor" />
-          </pre>
-        </div>
+        <Terminal />
       </header>
 
       <section>
