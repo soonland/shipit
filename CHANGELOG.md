@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project uses [Semantic Versioning](https://semver.org/).
 
+## [2.3.0] - 2026-11-10
+
+### Added
+- Chaos mode: `/api/chaos/error`, `/api/chaos/slow` and `/api/chaos/crash`, off unless a secret code is configured, rate limited, with structured logs (#10)
+- Terminal commands: `help`, `status`, `tail`, `clear` and `chaos …`, with command history (#10)
+- Terminal status bar with a lock to unlock chaos mode, the tail state and the chaos state (#10)
+- Cloud Monitoring dashboard, uptime check on `/health` and alert policies for downtime, 5xx errors and slow responses, versioned in `monitoring/` (#10)
+
 ## [2.2.0] - 2026-11-10
 
 ### Added
@@ -33,6 +41,7 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 First tagged release: React + TypeScript one-pager on Cloud Run, with CI, a manual deploy workflow, Dependabot, Vitest, ESLint and commitlint (#1, #3, #4).
 
+[2.3.0]: https://github.com/soonland/shipit/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/soonland/shipit/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/soonland/shipit/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/soonland/shipit/releases/tag/v2.0.0
