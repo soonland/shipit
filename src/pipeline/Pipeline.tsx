@@ -10,6 +10,9 @@ type Props = {
   timeScale?: number;
 };
 
+/** Time the progress line takes to reach the next node. */
+const RAIL_MS = 450;
+
 const icon: Record<Status, string> = { idle: "○", running: "◌", done: "✓" };
 
 export default function Pipeline({ version, revision, timeScale = 1 }: Props) {
@@ -44,7 +47,8 @@ export default function Pipeline({ version, revision, timeScale = 1 }: Props) {
               setFinished(true);
             }
           },
-          start + ms * 0.9,
+          // Finish early so the rail can travel to the next node before it starts.
+          start + ms - RAIL_MS * timeScale,
         ),
       );
       start += ms;
@@ -68,7 +72,12 @@ export default function Pipeline({ version, revision, timeScale = 1 }: Props) {
 
       <div
         className="pipe-track"
-        style={{ "--progress": `${(Math.max(doneCount - 1, 0) / (stages.length - 1)) * 100}%` } as CSSProperties}
+        style={
+          {
+            "--progress": `${(Math.min(doneCount, stages.length - 1) / (stages.length - 1)) * 100}%`,
+            "--rail-ms": `${RAIL_MS * timeScale}ms`,
+          } as CSSProperties
+        }
       >
         <div className="pipe-rail" aria-hidden="true" />
         <div className="pipe-stages" role="tablist" aria-label="Pipeline stages">

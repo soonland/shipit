@@ -34,6 +34,10 @@ describe("Pipeline", () => {
       act(() => vi.advanceTimersByTime(140)); // Commit (120ms) done, CI running
       expect(screen.getByRole("tab", { name: /CI/ })).toHaveAttribute("aria-selected", "true");
       expect(screen.getByRole("tab", { name: /Commit/ })).toHaveClass("stage-done");
+      // The line has already travelled to CI (node 2 of 6) when CI starts.
+      const track = document.querySelector<HTMLElement>(".pipe-track")!;
+      expect(track.style.getPropertyValue("--progress")).toBe("20%");
+      expect(screen.getByRole("tab", { name: /CI/ })).toHaveClass("stage-running");
 
       act(() => vi.advanceTimersByTime(stages.reduce((t, s) => t + s.simMs, 0) * 0.1));
       expect(screen.getByRole("status")).toHaveTextContent(
