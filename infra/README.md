@@ -23,3 +23,8 @@ terraform apply change.tfplan
 
 `terraform plan` should say **No changes** when nothing was edited. If it doesn't, something
 was changed by hand in the console: either copy that change here or apply to undo it.
+
+## Bootstrap
+
+Identities, GitHub sign-in, permissions, the state bucket, the budget and the chaos-key
+container live in [`bootstrap/`](bootstrap/), a separate stack applied only from a laptop.
