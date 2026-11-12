@@ -74,6 +74,7 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 First tagged release: React + TypeScript one-pager on Cloud Run, with CI, a manual deploy workflow, Dependabot, Vitest, ESLint and commitlint (#1, #3, #4).
 
+[2.5.0]: https://github.com/soonland/shipit/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/soonland/shipit/compare/v2.3.1...v2.4.0
 [2.3.1]: https://github.com/soonland/shipit/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/soonland/shipit/compare/v2.2.0...v2.3.0
