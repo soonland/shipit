@@ -28,3 +28,11 @@ was changed by hand in the console: either copy that change here or apply to und
 
 Identities, GitHub sign-in, permissions, the state bucket, the budget and the chaos-key
 container live in [`bootstrap/`](bootstrap/), a separate stack applied only from a laptop.
+
+## SLO and drift
+
+- `slo.tf`: 99.5% of requests succeed over 28 days (5xx = bad), with an email alert
+  when the error budget burns more than 10x too fast over an hour.
+- `.github/workflows/drift.yml`: every night, a read-only plan of this stack. Any
+  difference opens a GitHub issue labelled `drift`; it closes itself once fixed.
+  (The bootstrap stack isn't checked: GitHub can't read it, on purpose.)
