@@ -4,6 +4,20 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project uses [Semantic Versioning](https://semver.org/).
 
+## [2.5.0] - 2026-11-11
+
+### Added
+- Image registry and project APIs managed with Terraform; cleanup policy keeps release images (`v*`) and the 10 most recent, deletes others after 14 days; release deploys tag their image with the version (#18)
+- Bootstrap Terraform stack, applied only from a laptop: service accounts, GitHub sign-in (Workload Identity Federation), IAM, the state bucket, the monthly budget and the `chaos-key` container; replaces the `setup-*.sh` scripts except `setup-chaos-key.sh` (#20)
+- Cloud Run service settings managed with Terraform (identity, CPU/memory, scaling, probes, timeout, public access); the deploy and preview workflows only ship code and traffic (#21)
+
+### Improvements
+- Node 26 (LTS) in the image and CI; pnpm installed from `packageManager` since Node 25+ has no corepack (#23)
+
+### Bug Fixes
+- minimatch overridden to ^11.0.1 for a denial-of-service advisory (dev-only) (#23)
+- Terraform can read project services and the registry IAM policy from CI (#18, #19)
+
 ## [2.4.0] - 2026-11-11
 
 ### Added
